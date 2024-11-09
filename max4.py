@@ -5,12 +5,12 @@ d = int(input())
 maximum = None
     
     if a > b:
-        max = a
+        maximum = a
     else:
-        max = b
-    if c > max: 
-        max = c
-    if d > max:
-        max = d
+        maximum = b
+    if c > maximum: 
+        maximum = c
+    if d > maximum:
+        maximum = d
     
     print(maximum)
