@@ -30,8 +30,8 @@ class Vector:
         self.y -= other.y
         return self
 
-    def length(self):
-        return math.hypot(self.x, self.y)
+    def distance(self):
+        return math.hypot(self.x-other.x, self.y-other.y)
 
 
 a = Vector(1, 2.3)
@@ -39,6 +39,6 @@ b = Vector(2.9, 4.3)
 
 print(a.__iadd__(b))
 
-print(a.__add__(b))
+print(a - b)
 
-print(a.__sub__(b))
+print(a + b)
