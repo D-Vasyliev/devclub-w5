@@ -34,7 +34,7 @@ class Vector:
         return math.hypot(self.x-other.x, self.y-other.y)
 
 
-a = Vector(1, 2.3)
+a = Vector(5, 7.3)
 b = Vector(2.9, 4.3)
 
 print(a.__iadd__(b))
