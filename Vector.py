@@ -30,7 +30,7 @@ class Vector:
         self.y -= other.y
         return self
 
-    def distance(self):
+    def distance(self, other):
         return math.hypot(self.x-other.x, self.y-other.y)
 
 
@@ -42,3 +42,5 @@ print(a.__iadd__(b))
 print(a - b)
 
 print(a + b)
+
+print(a.distance(b))
