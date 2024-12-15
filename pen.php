@@ -86,13 +86,11 @@ class AutoPen extends Pen {
 }
 
 try {
-    // Звичайна ручка (Pen), без стану відкритості/закритості
     $pen = new Pen();
     $symbols = $pen->write("Hello, Santa!");
     echo $symbols . PHP_EOL;              
     echo $pen . PHP_EOL;
 
-    // АвтоРучка (AutoPen) зі станом відкрито/закрито
     $autoPen = new AutoPen(5);
     $symbols = $autoPen->write("Привіт, світ!");
 
