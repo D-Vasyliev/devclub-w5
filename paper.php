@@ -3,27 +3,28 @@
 class OutOfSpace extends Exception {}
 
 class Paper {
-    private static $maxSymbols = 4096;
-    private $symbols;
-    private $content;
+    private int $maxSymbols;
+    private int $symbols;
+    private string $content;
 
     public function __construct() {
+        $this->maxSymbols = 4096;
         $this->symbols = 0;
         $this->content = '';
     }
 
-    public function getMaxSymbols() {
-        return self::$maxSymbols;
+    public function getMaxSymbols(): int {
+        return $this->maxSymbols;
     }
 
-    public function getSymbols() {
+    public function getSymbols(): int {
         return $this->symbols;
     }
 
-    public function addContent($message) {
+    public function addContent(string $message): int {
         $messageLength = strlen($message);
+        $spaceAvailable = $this->maxSymbols - $this->symbols;
 
-        $spaceAvailable = self::$maxSymbols - $this->symbols;
         if ($spaceAvailable <= 0) {
             throw new OutOfSpace("Not enough space to add more content");
         }
@@ -34,7 +35,6 @@ class Paper {
             $toAdd = $spaceAvailable;
         }
 
-        // Додаємо частину повідомлення, яку можемо
         $this->content .= substr($message, 0, $toAdd);
         $this->symbols += $toAdd;
 
@@ -43,11 +43,11 @@ class Paper {
         return $toAdd;
     }
 
-    public function show() {
+    public function show(): void {
         echo $this->content;
     }
 
-    public function __toString() {
+    public function __toString(): string {
         return $this->content;
     }
 }
@@ -70,5 +70,3 @@ try {
 } catch (OutOfSpace $e) {
     echo "Error: " . $e->getMessage() . "\n";
 }
-
-?>
