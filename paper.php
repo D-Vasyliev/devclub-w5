@@ -30,9 +30,9 @@ class Paper {
 
         if ($messageLength < $spaceAvailable) {
             $toAdd = $messageLength;
-            } else {
-                $toAdd = $spaceAvailable;
-                }
+        } else {
+            $toAdd = $spaceAvailable;
+        }
 
         // Додаємо частину повідомлення, яку можемо
         $this->content .= substr($message, 0, $toAdd);
