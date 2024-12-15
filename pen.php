@@ -4,14 +4,12 @@ class OutOfInk extends Exception {}
 class PenClosed extends Exception {}
 
 class Pen {
-    private int $inkAmount;
-    private int $inkCapacity;
-    private bool $isOpen;
+    protected int $inkAmount;
+    protected int $inkCapacity;
 
     public function __construct(int $capacity = 4096) {
         $this->inkCapacity = $capacity;
         $this->inkAmount = $this->inkCapacity;
-        $this->isOpen = false;
     }
 
     public function getInkAmount(): int {
@@ -22,22 +20,7 @@ class Pen {
         return $this->inkCapacity;
     }
 
-    public function open(): void {
-        $this->isOpen = true;
-    }
-
-    public function close(): void {
-        $this->isOpen = false;
-    }
-
-    public function isOpen(): bool {
-        return $this->isOpen;
-    }
-
     public function write(string $message): int {
-        if (!$this->isOpen) {
-            throw new PenClosed("Ручка закрита! Спочатку відкрийте її.");
-        }
         if ($this->inkAmount <= 0) {
             throw new OutOfInk("Немає чорнила!");
         }
@@ -59,34 +42,66 @@ class Pen {
     }
 
     public function __toString(): string {
+        return "Ручка - Чорнила: {$this->getInkAmount()} / {$this->getInkCapacity()}";
+    }
+}
+
+class AutoPen extends Pen {
+    private bool $isOpen;
+
+    public function __construct(int $capacity = 4096) {
+        parent::__construct($capacity);
+        $this->isOpen = false;
+    }
+
+    public function open(): void {
+        $this->isOpen = true;
+    }
+
+    public function close(): void {
+        $this->isOpen = false;
+    }
+
+    public function isOpen(): bool {
+        return $this->isOpen;
+    }
+
+    public function write(string $message): int {
+        if (!$this->isOpen) {
+            throw new PenClosed("Ручка закрита! Спочатку відкрийте її.");
+        }
+        
+        return parent::write($message);
+    }
+
+    public function __toString(): string {
         if ($this->isOpen) {
             $state = "відкрита";
         } else {
             $state = "закрита";
         }
-
-        return "Ручка ({$state}) - Чорнила: {$this->getInkAmount()} / {$this->getInkCapacity()}";
+        
+        return "АвтоРучка ({$state}) - Чорнила: {$this->getInkAmount()} / {$this->getInkCapacity()}";
     }
 }
 
 try {
+    // Звичайна ручка (Pen), без стану відкритості/закритості
     $pen = new Pen();
-    $symbols = $pen->write("Hello, Santa!"); 
-
-    $pen->open(); 
     $symbols = $pen->write("Hello, Santa!");
     echo $symbols . PHP_EOL;              
     echo $pen . PHP_EOL;
 
-    $pen->close();
+    // АвтоРучка (AutoPen) зі станом відкрито/закрито
+    $autoPen = new AutoPen(5);
+    $symbols = $autoPen->write("Привіт, світ!");
 
-    $lowInkPen = new Pen(5);
-    $lowInkPen->open();
-    $symbols = $lowInkPen->write("Привіт, світ!");
+    $autoPen->open();
+    $symbols = $autoPen->write("Привіт, світ!");
     echo $symbols . PHP_EOL;
-    echo $lowInkPen . PHP_EOL;
+    echo $autoPen . PHP_EOL;
 
-    $symbols = $lowInkPen->write("Додатковий текст");
+    $symbols = $autoPen->write("Додатковий текст");
 
 } catch (OutOfInk $e) {
     echo "Чорнила закінчилися!" . PHP_EOL;
