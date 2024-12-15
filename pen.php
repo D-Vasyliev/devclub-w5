@@ -1,14 +1,17 @@
 <?php
 
 class OutOfInk extends Exception {}
+class PenClosed extends Exception {}
 
 class Pen {
     private int $inkAmount;
     private int $inkCapacity;
+    private bool $isOpen;
 
     public function __construct(int $capacity = 4096) {
         $this->inkCapacity = $capacity;
         $this->inkAmount = $this->inkCapacity;
+        $this->isOpen = false;
     }
 
     public function getInkAmount(): int {
@@ -19,9 +22,24 @@ class Pen {
         return $this->inkCapacity;
     }
 
+    public function open(): void {
+        $this->isOpen = true;
+    }
+
+    public function close(): void {
+        $this->isOpen = false;
+    }
+
+    public function isOpen(): bool {
+        return $this->isOpen;
+    }
+
     public function write(string $message): int {
+        if (!$this->isOpen) {
+            throw new PenClosed("Ручка закрита! Спочатку відкрийте її.");
+        }
         if ($this->inkAmount <= 0) {
-            throw new OutOfInk("Not enough ink!");
+            throw new OutOfInk("Немає чорнила!");
         }
 
         $messageLength = strlen($message);
@@ -41,27 +59,39 @@ class Pen {
     }
 
     public function __toString(): string {
-        return "Чорнила: " . $this->getInkAmount() . " / " . $this->getInkCapacity();
+        if ($this->isOpen) {
+            $state = "відкрита";
+        } else {
+            $state = "закрита";
+        }
+
+        return "Ручка ({$state}) - Чорнила: {$this->getInkAmount()} / {$this->getInkCapacity()}";
     }
 }
 
-// Приклад використання
 try {
     $pen = new Pen();
+    $symbols = $pen->write("Hello, Santa!"); 
+
+    $pen->open(); 
     $symbols = $pen->write("Hello, Santa!");
-    echo $symbols . PHP_EOL;              // Виведе: 13
-    echo $pen . PHP_EOL;                 // Виведе: Чорнила: 4083 / 4096
+    echo $symbols . PHP_EOL;              
+    echo $pen . PHP_EOL;
+
+    $pen->close();
 
     $lowInkPen = new Pen(5);
+    $lowInkPen->open();
     $symbols = $lowInkPen->write("Привіт, світ!");
     echo $symbols . PHP_EOL;
     echo $lowInkPen . PHP_EOL;
 
-    // Тут спроба написати більше, ніж є чорнила
     $symbols = $lowInkPen->write("Додатковий текст");
 
 } catch (OutOfInk $e) {
     echo "Чорнила закінчилися!" . PHP_EOL;
+} catch (PenClosed $e) {
+    echo $e->getMessage() . PHP_EOL;
 }
 
 ?>
