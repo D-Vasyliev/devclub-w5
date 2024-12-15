@@ -28,7 +28,11 @@ class Paper {
             throw new OutOfSpace("Not enough space to add more content");
         }
 
-        $toAdd = ($messageLength < $spaceAvailable) ? $messageLength : $spaceAvailable;
+        if ($messageLength < $spaceAvailable) {
+            $toAdd = $messageLength;
+            } else {
+                $toAdd = $spaceAvailable;
+                }
 
         // Додаємо частину повідомлення, яку можемо
         $this->content .= substr($message, 0, $toAdd);
